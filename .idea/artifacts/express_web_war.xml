@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="express-web:war">
-    <output-path>$PROJECT_DIR$/out/artifacts/express_web_war</output-path>
-    <root id="archive" name="express-web_war.war">
-      <element id="artifact" artifact-name="express-web:war exploded" />
-    </root>
-  </artifact>
-</component>

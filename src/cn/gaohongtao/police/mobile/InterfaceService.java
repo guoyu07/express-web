@@ -51,7 +51,7 @@ public class InterfaceService extends Controller {
         }
         
         TFileInfo.dao.set("type", getParaToInt("type")).set("path", file.getUploadPath() + File.separator + file.getFileName())
-                .set("create_time", DateTime.now().toDate()).save();
+                .set("create_time", DateTime.now().toDate()).remove("id").save();
         renderJson(new Protocol().data("fileToken", TFileInfo.dao.get("id")).send());
     }
     

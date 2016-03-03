@@ -20,7 +20,7 @@ public class ServiceErrorInterceptor implements Interceptor {
                 inv.invoke();
             } catch (Exception e) {
                 log.error("error", e);
-                inv.getController().renderJson(new Protocol(e.getMessage()));
+                inv.getController().renderJson(new Protocol(e.getMessage()).serverError().send());
             }
         } else {
             inv.invoke();
