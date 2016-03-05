@@ -1,0 +1,35 @@
+<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'${button.icon!}',plain:true"
+   onclick="response_task()">
+    ${button.name!}
+</a>
+<script type="text/javascript">
+    var response_task = function() {
+        var $grid = $('#${gridId}');
+        var rows = $grid.datagrid('getSelections');
+        var num = rows.length;
+        if (num != "1") {
+            $.slideMsg("请选择一条记录！");
+            return;
+        }
+        var taskId = rows[0]['id'];
+        $.messager.confirm('请确认', '您要反馈当前的任务吗？', function(o) {
+            if (o) {
+                console.log('反馈任务' + taskId);
+                $.syncPost('/police_task/response', {id: taskId},
+                        function (result, status) {
+                            if (result.success) {
+                                $.slideMsg("反馈成功！");
+                                if($grid.context.URL.indexOf('/single_tree') != -1){
+                                    $grid.treegrid('load');
+                                } else {
+                                    $grid.datagrid('load');
+                                }
+                            } else {
+                                $.messager.alert("操作错误", result.msg ,'error');
+                            }
+                        });
+            }
+        });
+    };
+</script>
+</script>

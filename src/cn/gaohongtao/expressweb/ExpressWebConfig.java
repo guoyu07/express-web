@@ -3,9 +3,12 @@ package cn.gaohongtao.expressweb;
 import java.lang.reflect.Method;
 
 import cn.gaohongtao.police.mobile.InterfaceService;
+import cn.gaohongtao.police.mobile.controller.TaskController;
 import cn.gaohongtao.police.mobile.interceptor.ServiceErrorInterceptor;
 import cn.gaohongtao.police.mobile.model.EovaDepart;
+import cn.gaohongtao.police.mobile.model.EovaDict;
 import cn.gaohongtao.police.mobile.model.TFileInfo;
+import cn.gaohongtao.police.mobile.model.TTask;
 import com.eova.config.EovaConfig;
 import com.eova.interceptor.LoginInterceptor;
 import com.jfinal.config.Interceptors;
@@ -28,6 +31,7 @@ public class ExpressWebConfig extends EovaConfig {
     protected void route(Routes me) {
         // 自定义的路由配置往这里加。。。
         me.add("/service", InterfaceService.class);
+        me.add("/police_task", TaskController.class);
         
         // 不需要登录拦截的URL
         LoginInterceptor.excludes.add("/init");
@@ -47,11 +51,13 @@ public class ExpressWebConfig extends EovaConfig {
     protected void mapping(ActiveRecordPlugin arp) {
         // 自定义的Model映射往这里加。。。
         arp.addMapping("t_file_info", TFileInfo.class);
+        arp.addMapping("t_task", TTask.class);
     }
     
     protected void mappingEova(ActiveRecordPlugin arp) {
         super.mappingEova(arp);
         arp.addMapping("eova_depart", EovaDepart.class);
+        arp.addMapping("eova_dict", EovaDict.class);
     }
     
     /**
