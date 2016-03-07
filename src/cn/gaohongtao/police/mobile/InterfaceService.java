@@ -308,7 +308,7 @@ public class InterfaceService extends Controller {
             JSONObject p = new JSONObject();
             departArray.add(p);
             p.put("name", each.getStr("name"));
-            p.put("departId", each.getStr("id"));
+            p.put("departId", each.get("id").toString());
         }
         
         List<User> users = User.dao.find("select * from eova_user where depart_id = ?", request.getInteger("departId"));
@@ -319,7 +319,7 @@ public class InterfaceService extends Controller {
         renderJson(new Protocol().data("departments", departArray).data("users", userArray).send());
     }
     
-    private static class Person {
+    public static class Person {
         
         private String name = "王发奎";
         
@@ -338,6 +338,77 @@ public class InterfaceService extends Controller {
         private String faceFile = "2121212,234243243,2212";
         
         private String score = "10";
-        
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getIdCard() {
+            return idCard;
+        }
+
+        public void setIdCard(String idCard) {
+            this.idCard = idCard;
+        }
+
+        public String getBirth() {
+            return birth;
+        }
+
+        public void setBirth(String birth) {
+            this.birth = birth;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+
+        public void setGender(String gender) {
+            this.gender = gender;
+        }
+
+        public String getNation() {
+            return nation;
+        }
+
+        public void setNation(String nation) {
+            this.nation = nation;
+        }
+
+        public String getOrigin() {
+            return origin;
+        }
+
+        public void setOrigin(String origin) {
+            this.origin = origin;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public void setState(String state) {
+            this.state = state;
+        }
+
+        public String getFaceFile() {
+            return faceFile;
+        }
+
+        public void setFaceFile(String faceFile) {
+            this.faceFile = faceFile;
+        }
+
+        public String getScore() {
+            return score;
+        }
+
+        public void setScore(String score) {
+            this.score = score;
+        }
     }
 }

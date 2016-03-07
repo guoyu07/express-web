@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3636112661">
+  <component name="DataSourceManagerImpl" format="xml" hash="2479648517">
     <data-source source="LOCAL" name="MySQL - expressweb_dev@mongodb.iwshoes.cn" uuid="b3a72c83-6c0e-478d-a4f9-09705dd972e5">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
