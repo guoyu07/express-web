@@ -1,9 +1,6 @@
 package cn.gaohongtao.police.mobile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,13 +15,11 @@ import com.eova.common.base.BaseModel;
 import com.eova.common.utils.EncryptUtil;
 import com.eova.common.utils.xx;
 import com.eova.config.EovaConfig;
-import com.eova.model.Task;
 import com.eova.model.User;
 import com.jfinal.core.Controller;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.upload.UploadFile;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,17 +87,21 @@ public class InterfaceService extends Controller {
         } else if (!user.getStr("login_pwd").equals(EncryptUtil.getSM32(loginPwd))) {
             renderJson(new Protocol("密码错误").serverError().send());
         } else {
-            JSONObject userObject = new JSONObject();
-            userObject.put("name", user.getStr("nickname"));
-            userObject.put("userId", user.getStr("login_id"));
-            if (!xx.isEmpty(user.get("depart_id"))) {
-                EovaDepart depart = EovaDepart.dao.findById(user.get("depart_id"));
-                if (null != depart)
-                    userObject.put("department", depart.getStr("name"));
-            }
-            copyProperty(userObject, user, "age", "gender", "origin", "phone", "photo", "email", "job");
-            renderJson(new Protocol().data("user", userObject).data("departId", user.get("depart_id")).send());
+            renderJson(new Protocol().data("user", getUser(user)).data("departId", user.get("depart_id")).send());
         }
+    }
+    
+    private JSONObject getUser(User user) {
+        JSONObject userObject = new JSONObject();
+        userObject.put("name", user.getStr("nickname"));
+        userObject.put("userId", user.getStr("login_id"));
+        if (!xx.isEmpty(user.get("depart_id"))) {
+            EovaDepart depart = EovaDepart.dao.findById(user.get("depart_id"));
+            if (null != depart)
+                userObject.put("department", depart.getStr("name"));
+        }
+        copyProperty(userObject, user, "age", "gender", "origin", "phone", "photo", "email", "job");
+        return userObject;
     }
 
     public void listTask() {
@@ -246,7 +245,99 @@ public class InterfaceService extends Controller {
 
     private void copyProperty(JSONObject target, BaseModel source, String... key) {
         for (String each : key) {
-            target.put(each, source.get(each, ""));
+            target.put(each, source.get(each, "").toString());
         }
+    }
+    
+    public void queryById() {
+        JSONObject request = JSONObject.parseObject(HttpKit.readData(getRequest()));
+        if (null == request) {
+            renderJson(new Protocol("请求提格式非法").requestError().send());
+            return;
+        }
+        if (xx.isEmpty(request.get("idCard"))) {
+            renderJson(new Protocol("缺少身份证编号").argumentError().send());
+            return;
+        }
+        
+        renderJson(new Protocol().data("person", new Person()).send());
+    }
+    
+    public void queryByFace() {
+        UploadFile file = getFile("file", "/tmp");
+        if (xx.isEmpty(file)) {
+            renderJson(new Protocol("缺少人脸文件").argumentError().send());
+            return;
+        }
+        JSONArray result = new JSONArray();
+        result.add(new Person());
+        Person p = new Person();
+        p.name = "张力";
+        p.score = "5";
+        result.add(p);
+        renderJson(new Protocol().data("persons", result).send());
+    }
+    
+    public void queryCar() {
+        JSONObject request = JSONObject.parseObject(HttpKit.readData(getRequest()));
+        if (null == request) {
+            renderJson(new Protocol("请求提格式非法").requestError().send());
+            return;
+        }
+        if (xx.isEmpty(request.get("number"))) {
+            renderJson(new Protocol("缺少车牌号码").argumentError().send());
+            return;
+        }
+        
+        renderJson(new Protocol().data("color", "红色").data("brand", "通用").data("model", "君威").data("person", new Person()).send());
+    }
+    
+    public void getAddressBook() {
+        JSONObject request = JSONObject.parseObject(HttpKit.readData(getRequest()));
+        if (null == request) {
+            renderJson(new Protocol("请求提格式非法").requestError().send());
+            return;
+        }
+        if (xx.isEmpty(request.get("departId"))) {
+            renderJson(new Protocol("缺少部门ID").argumentError().send());
+            return;
+        }
+        List<EovaDepart> departs = EovaDepart.dao.find("select * from eova_depart where parent_id = ?", request.getInteger("departId"));
+        JSONArray departArray = new JSONArray();
+        for (EovaDepart each : departs) {
+            JSONObject p = new JSONObject();
+            departArray.add(p);
+            p.put("name", each.getStr("name"));
+            p.put("departId", each.getStr("id"));
+        }
+        
+        List<User> users = User.dao.find("select * from eova_user where depart_id = ?", request.getInteger("departId"));
+        JSONArray userArray = new JSONArray();
+        for (User each : users) {
+            userArray.add(getUser(each));
+        }
+        renderJson(new Protocol().data("departments", departArray).data("users", userArray).send());
+    }
+    
+    private static class Person {
+        
+        private String name = "王发奎";
+        
+        private String idCard = "130102199801019317";
+        
+        private String birth = "1998-01-01";
+        
+        private String gender = "男";
+        
+        private String nation = "汉";
+        
+        private String origin = "河北省石家庄市";
+        
+        private String state = "正常";
+        
+        private String faceFile = "2121212,234243243,2212";
+        
+        private String score = "10";
+        
     }
 }
