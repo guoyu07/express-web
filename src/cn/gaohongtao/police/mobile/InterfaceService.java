@@ -87,7 +87,7 @@ public class InterfaceService extends Controller {
         } else if (!user.getStr("login_pwd").equals(EncryptUtil.getSM32(loginPwd))) {
             renderJson(new Protocol("密码错误").serverError().send());
         } else {
-            renderJson(new Protocol().data("user", getUser(user)).data("departId", user.get("depart_id")).send());
+            renderJson(new Protocol().data("user", getUser(user)).data("departId", user.get("depart_id").toString()).send());
         }
     }
     
