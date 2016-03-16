@@ -89,7 +89,7 @@ $(function () {
         }
 
         if (f.formatter != null) {
-            attr.formatter = new Function('return ' + f.formatter)();
+            attr.formatter = new Function('return ' + f.formatter + ';')();
         } else {
             // 默认格式化处理
             if (f.type == '复选框') {
